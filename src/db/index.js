@@ -1,4 +1,3 @@
-//bd.js
 import pkg from "pg";
 const { Pool } = pkg;
 
@@ -13,9 +12,11 @@ async function selectUsuarios() {
   const res = await client.query("SELECT * FROM usuario");
   return res.rows;
 }
-async function selectUsuario() {
+async function selectUsuario(id) {
   const client = await connect();
-  const res = await client.query("SELECT * FROM usuario");
+  const query = "SELECT * FROM usuario WHERE id = $1";
+  const usuario = [id];
+  const res = await client.query(query, usuario);
   return res.rows;
 }
 async function insertUsuario() {
@@ -33,4 +34,11 @@ async function updateUsuario() {
   const res = await client.query("SELECT * FROM usuario");
   return res.rows;
 }
-export { selectUsuarios, selectUsuario, insertUsuario, deleteUsuario, updateUsuario };
+async function autenticarUsuario(email, senha) {
+  const client = await connect();
+  const query = "SELECT * FROM usuario WHERE email = $1 AND senha = $2";
+  const usuario = [email, senha];
+  const res = await client.query(query, usuario);
+  return res.rows[0];
+}
+export { selectUsuarios, selectUsuario, insertUsuario, deleteUsuario, updateUsuario, autenticarUsuario };
